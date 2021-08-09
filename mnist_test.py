@@ -9,6 +9,7 @@ Created on Fri Jul 20 13:03:16 2018
 import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
+from get_image import Board
 
 
 # 1. Load pre-shuffled MNIST data into train and test sets
@@ -30,7 +31,9 @@ model = tf.keras.Sequential()
  
 model.add( tf.keras.layers.Input((28,28,1)) )
 
-model.add( tf.keras.layers.Convolution2D(32, (3, 3), padding = 'same', activation='relu', strides = (7,7)) )
+model.add( tf.keras.layers.Convolution2D(8, (5, 5), padding = 'same', activation='relu') )
+
+model.add( tf.keras.layers.Convolution2D(16, (3, 3), padding = 'same', activation='relu') )
 
 model.add( tf.keras.layers.Flatten() )
 
@@ -49,10 +52,9 @@ model.compile(loss='categorical_crossentropy',
 
 
 # 6. Fit model on training data
-model.fit(X_train, y_train, 
-          batch_size=128, epochs=10, verbose=1)
-
-
+# model.fit(X_train, y_train, 
+#           batch_size=128, epochs=10, verbose=1)
+model = tf.keras.models.load_model('trained')
 
 
 
@@ -72,4 +74,16 @@ for i in range(5):
  
         count = count+1   
  
+plt.show()   
+plt.pause(0.001)
+ 
 
+
+while True:
+
+    board = Board()
+    board.run()
+    
+    y = np.argmax(model.predict(board.img.reshape(1,28,28,1)))
+    
+    print(y)
